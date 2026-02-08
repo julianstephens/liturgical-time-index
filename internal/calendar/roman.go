@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/julianstephens/go-utils/generic"
 	"github.com/julianstephens/liturgical-time-index/internal/util"
 )
 
@@ -207,7 +208,7 @@ func (ce *CalendarEngine) GetRomanSeasonWeek(
 	daysSinceSeasonStart := int(parsed.Sub(seasonStartDate).Hours() / 24)
 	if daysSinceSeasonStart < 0 {
 		return 0, &CalendarError{
-			Message: ptr("date is before the start of the season"),
+			Message: generic.Ptr("date is before the start of the season"),
 			Err:     ErrValidationFailed,
 		}
 	}
@@ -310,8 +311,4 @@ func padZero(num int) string {
 		return "0" + strconv.Itoa(num)
 	}
 	return strconv.Itoa(num)
-}
-
-func ptr[T any](s T) *T {
-	return &s
 }
