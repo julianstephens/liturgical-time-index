@@ -1,0 +1,67 @@
+version: 1
+work: RB
+witness: rb1980
+
+defaults:
+  cue: "Keep the day steady; do the next right thing."
+  rb:
+    - "RB Prol. 1–7"
+  tags: []
+
+seasons:
+  advent:
+    weekdays:
+      mon: { cue: "Watch and listen.", rb: ["RB Prol. 1–7"] }
+      tue: { cue: "Return to the first call.", rb: ["RB Prol. 8–20"] }
+      wed: { cue: "Receive instruction.", rb: ["RB Prol. 21–35"] }
+      thu: { cue: "Turn toward obedience.", rb: ["RB Prol. 36–50"] }
+      fri: { cue: "Prefer nothing to Christ.", rb: ["RB 4.1–21"] }
+      sat: { cue: "Prepare the heart.", rb: ["RB 7.1–10"] }
+      sun: { cue: "Hold silence lightly.", rb: ["RB 6.1–8"] }
+    fallback:
+      cue: "Advent: attend to beginnings."
+      rb: ["RB Prol. 1–20"]
+
+  lent:
+    weekdays:
+      mon: { cue: "Restraint without display.", rb: ["RB 49.1–8"] }
+      tue: { cue: "Order the day.", rb: ["RB 48.1–9"] }
+      wed: { cue: "Guard speech.", rb: ["RB 6.1–8"] }
+      thu: { cue: "Humility in small things.", rb: ["RB 7.18–31"] }
+      fri: { cue: "Confess without drama.", rb: ["RB 46.1–5"] }
+      sat: { cue: "Make room for God.", rb: ["RB 20.1–5"] }
+      sun: { cue: "Receive mercy.", rb: ["RB 4.72–74"] }
+    fallback:
+      cue: "Lent: more attentive, less scattered."
+      rb: ["RB 49.1–8"]
+
+  triduum:
+    fallback:
+      cue: "Triduum: keep watch."
+      rb: ["RB Prol. 1–3", "RB 4.21–28", "RB 7.62–70"]
+
+  eastertide:
+    weekdays:
+      mon: { cue: "Begin again.", rb: ["RB 58.1–8"] }
+      tue: { cue: "Prefer the good zeal.", rb: ["RB 72.1–12"] }
+      wed: { cue: "Stability in charity.", rb: ["RB 53.1–7"] }
+      thu: { cue: "Let peace govern.", rb: ["RB 4.72–74"] }
+      fri: { cue: "Joy without noise.", rb: ["RB Prol. 49–50"] }
+      sat: { cue: "Work as worship.", rb: ["RB 57.1–9"] }
+      sun: { cue: "Hold the center.", rb: ["RB 19.1–7"] }
+    fallback:
+      cue: "Eastertide: quiet joy."
+      rb: ["RB 72.1–12"]
+
+  ordinary:
+    weekdays:
+      mon: { cue: "Steady work.", rb: ["RB 48.10–25"] }
+      tue: { cue: "Guard attention.", rb: ["RB 7.32–44"] }
+      wed: { cue: "Simplicity.", rb: ["RB 33.1–6"] }
+      thu: { cue: "Hospitality.", rb: ["RB 53.1–15"] }
+      fri: { cue: "Tools and care.", rb: ["RB 31.10–19"] }
+      sat: { cue: "Review and amend.", rb: ["RB 4.57–74"] }
+      sun: { cue: "Rest in God.", rb: ["RB 20.1–5"] }
+    fallback:
+      cue: "Ordinary Time: fidelity in the ordinary."
+      rb: ["RB 4.1–21"]
