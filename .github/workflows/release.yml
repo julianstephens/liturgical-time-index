@@ -62,8 +62,8 @@ jobs:
 
       - name: Build
         run: |
-          mkdir -p ../dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ../dist/${BINARY_NAME}-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/lti
+          mkdir ./dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o ./dist/${BINARY_NAME}-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/lti
 
       - name: Archive binary
         working-directory: ./dist
