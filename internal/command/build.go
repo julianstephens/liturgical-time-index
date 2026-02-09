@@ -18,9 +18,9 @@ type BuildCmd struct {
 	Year         string  `name:"year"      help:"The year to build the index for."`
 	Plan         string  `name:"plan"      help:"The path to the plan file to build the index from."             default:"./plan.yaml"`
 	Tradition    string  `name:"tradition" help:"The liturgical tradition to build the index for."               default:"roman"       enum:"roman"`
-	ICSPath      *string `name:"out"       help:"The path to output the ICalendar file to (e.g. ./calendar.ics)"                                    required:"" xor:"md,out"`
-	MarkdownPath *string `name:"md"        help:"The path to output the Markdown file to (e.g. ./calendar.md)"                                      required:"" xor:"md,out"`
-	MarkdownType string  `name:"type" help:"Whether to output the full calendar or a specific season." default:"annual" enum:"annual,advent,christmastide,epiphanytide,lent,triduum,easter,ordinary"`
+	ICSPath      *string `name:"out"       help:"The path to output the ICalendar file to (e.g. ./calendar.ics)"                                                                                                    required:"" xor:"md,out"`
+	MarkdownPath *string `name:"md"        help:"The path to output the Markdown file to (e.g. ./calendar.md)"                                                                                                      required:"" xor:"md,out"`
+	MarkdownType string  `name:"type"      help:"Whether to output the full calendar or a specific season."      default:"annual"      enum:"annual,advent,christmastide,epiphanytide,lent,triduum,easter,ordinary"`
 	Verbose      bool    `name:"verbose"   help:"Enable verbose logging."`
 }
 
