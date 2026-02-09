@@ -43,25 +43,25 @@ func LoadPlan(planPath string) (*Plan, error) {
 	return &plan, nil
 }
 
-// ValidatePlan loads a plan from the specified path and validates its contents.
+// LoadAndValidatePlan loads a plan from the specified path and validates its contents.
 // It checks that the plan can be loaded successfully and that all entries conform to expected formats and rules.
-func ValidatePlan(planPath string) error {
+func LoadAndValidatePlan(planPath string) error {
 	plan, err := LoadPlan(planPath)
 	if err != nil {
 		return err
 	}
 
-	if err := plan.validate(); err != nil {
+	if err := plan.Validate(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// validate checks the structure and content of the Plan to ensure it meets the required criteria.
+// Validate checks the structure and content of the Plan to ensure it meets the required criteria.
 // It verifies that each season has valid weekday entries, that there are no duplicate weekdays,
 // and that all RB references are properly formatted.
-func (p *Plan) validate() error {
+func (p *Plan) Validate() error {
 	if _, err := p.Defaults.validate(); err != nil {
 		return &PlanError{
 			Message: generic.Ptr("invalid default plan entry"),

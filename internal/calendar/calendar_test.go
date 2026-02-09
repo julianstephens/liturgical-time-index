@@ -1,45 +1,29 @@
-package calendar
+package calendar_test
 
 import (
 	"fmt"
 	"testing"
 	"time"
 
-	"github.com/go-playground/validator/v10"
-
-	"github.com/julianstephens/liturgical-time-index/internal/util"
+	"github.com/julianstephens/liturgical-time-index/internal/calendar"
 )
 
-func getConfiguredValidator() *validator.Validate {
-	validate := validator.New()
-	if err := validate.RegisterValidation("ISO8601", util.ValidateISO8601); err != nil {
-		panic(fmt.Sprintf("Failed to register ISO8601 validation: %v", err))
-	}
-	return validate
-}
-
 func TestNewCalendarEngine(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := calendar.NewCalendarEngine()
 
 	if ce == nil {
 		t.Error("NewCalendarEngine returned nil")
 	}
-
-	if ce.validate != validate {
-		t.Error("CalendarEngine validator not set correctly")
-	}
 }
 
 func TestGetEasterGregorian(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := calendar.NewCalendarEngine()
 
 	testYears := []int{2025, 2024, 2023, 2022, 2021, 1961}
 
 	for _, year := range testYears {
 		t.Run(fmt.Sprintf("Year%d", year), func(t *testing.T) {
-			easter := ce.getEasterGregorian(year)
+			easter := ce.GetEasterGregorian(year)
 
 			// Verify that Easter is in April or late March
 			month := easter.Month()
@@ -61,11 +45,10 @@ func TestGetEasterGregorian(t *testing.T) {
 }
 
 func TestCalendarEngineIntegration(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := calendar.NewCalendarEngine()
 
 	// Test a date in 2025
-	dayKey, err := ce.GetRomanDay("2025-03-09", RomanCalendar)
+	dayKey, err := ce.GetRomanDay("2025-03-09", calendar.RomanCalendar)
 	if err != nil {
 		t.Fatalf("GetRomanDay failed: %v", err)
 	}
@@ -78,11 +61,11 @@ func TestCalendarEngineIntegration(t *testing.T) {
 		t.Errorf("Expected date 2025-03-09, got %s", dayKey.Date)
 	}
 
-	if dayKey.Tradition != RomanCalendar {
+	if dayKey.Tradition != calendar.RomanCalendar {
 		t.Errorf("Expected tradition RomanCalendar, got %s", dayKey.Tradition)
 	}
 
-	if dayKey.Weekday != Sunday {
+	if dayKey.Weekday != calendar.Sunday {
 		t.Errorf("Expected weekday Sunday, got %s", dayKey.Weekday)
 	}
 }

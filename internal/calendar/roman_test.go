@@ -7,8 +7,7 @@ import (
 )
 
 func TestGetRomanWeekday(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	testCases := []struct {
 		date     string
@@ -38,8 +37,7 @@ func TestGetRomanWeekday(t *testing.T) {
 }
 
 func TestGetRomanWeekdayInvalidDate(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	_, err := ce.GetRomanWeekday("invalid-date")
 	if err == nil {
@@ -52,8 +50,7 @@ func TestGetRomanWeekdayInvalidDate(t *testing.T) {
 }
 
 func TestGetRomanSeason(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	testCases := []struct {
 		date string
@@ -95,8 +92,7 @@ func TestGetRomanSeason(t *testing.T) {
 }
 
 func TestGetRomanSeasonInvalidTradition(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	_, err := ce.GetRomanSeason("2025-03-09", CalendarTradition("Invalid"))
 	if err == nil {
@@ -109,8 +105,7 @@ func TestGetRomanSeasonInvalidTradition(t *testing.T) {
 }
 
 func TestGetRomanSeasonWeek(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	testCases := []struct {
 		date   string
@@ -138,8 +133,7 @@ func TestGetRomanSeasonWeek(t *testing.T) {
 }
 
 func TestGetRomanSeasonWeekBeforeSeasonStart(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	// Try to get season week for a date before the season starts
 	_, err := ce.GetRomanSeasonWeek("2025-01-01", Lent, RomanCalendar)
@@ -153,8 +147,7 @@ func TestGetRomanSeasonWeekBeforeSeasonStart(t *testing.T) {
 }
 
 func TestGetRomanDay(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	testCases := []struct {
 		date            string
@@ -197,8 +190,7 @@ func TestGetRomanDay(t *testing.T) {
 }
 
 func TestGetRomanDayInvalidTradition(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	_, err := ce.GetRomanDay("2025-03-09", CalendarTradition("Invalid"))
 	if err == nil {
@@ -211,8 +203,7 @@ func TestGetRomanDayInvalidTradition(t *testing.T) {
 }
 
 func TestGetRomanDayInvalidDate(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	_, err := ce.GetRomanDay("invalid-date", RomanCalendar)
 	if err == nil {
@@ -221,8 +212,7 @@ func TestGetRomanDayInvalidDate(t *testing.T) {
 }
 
 func TestGenerateRomanCalendar(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	days, err := ce.GenerateRomanCalendar("2024", RomanCalendar)
 	if err != nil {
@@ -269,8 +259,7 @@ func TestGenerateRomanCalendar(t *testing.T) {
 }
 
 func TestGenerateRomanCalendarLeapYear(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	days, err := ce.GenerateRomanCalendar("2024", RomanCalendar)
 	if err != nil {
@@ -284,8 +273,7 @@ func TestGenerateRomanCalendarLeapYear(t *testing.T) {
 }
 
 func TestGenerateRomanCalendarInvalidTradition(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	_, err := ce.GenerateRomanCalendar("2025", CalendarTradition("Invalid"))
 	if err == nil {
@@ -294,8 +282,7 @@ func TestGenerateRomanCalendarInvalidTradition(t *testing.T) {
 }
 
 func TestHolidays(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	holidays, err := ce.Holidays(2024, RomanCalendar)
 	if err != nil {
@@ -339,8 +326,7 @@ func TestHolidays(t *testing.T) {
 }
 
 func TestGetRomanSeasonStartDate(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	testCases := []struct {
 		date   string
@@ -375,8 +361,7 @@ func TestGetRomanSeasonStartDate(t *testing.T) {
 }
 
 func TestGetRomanSeasonStartDateInvalidTradition(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	_, err := ce.getRomanSeasonStartDate("2025-03-09", Lent, CalendarTradition("Invalid"))
 	if err == nil {
@@ -389,8 +374,7 @@ func TestGetRomanSeasonStartDateInvalidTradition(t *testing.T) {
 }
 
 func TestDayKeyValidation(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	// Get a valid DayKey
 	dayKey, err := ce.GetRomanDay("2025-03-09", RomanCalendar)
@@ -398,16 +382,26 @@ func TestDayKeyValidation(t *testing.T) {
 		t.Fatalf("GetRomanDay failed: %v", err)
 	}
 
-	// Validate it
-	err = validate.Struct(dayKey)
-	if err != nil {
-		t.Fatalf("DayKey validation failed: %v", err)
+	// Verify all required fields are populated
+	if dayKey.Date == "" {
+		t.Error("DayKey Date is empty")
+	}
+	if dayKey.Season == "" {
+		t.Error("DayKey Season is empty")
+	}
+	if dayKey.Weekday == "" {
+		t.Error("DayKey Weekday is empty")
+	}
+	if dayKey.Tradition == "" {
+		t.Error("DayKey Tradition is empty")
+	}
+	if dayKey.SeasonWeek < 1 {
+		t.Error("DayKey SeasonWeek is less than 1")
 	}
 }
 
 func TestAdventBoundary(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	// Test the boundary for Advent (Sunday after Nov 27)
 	// In 2025, Nov 27 is a Thursday, so the Sunday after is Nov 30
@@ -424,8 +418,7 @@ func TestAdventBoundary(t *testing.T) {
 }
 
 func TestChristmasBoundary(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	// Test Christmas boundaries
 	dayBefore, _ := ce.GetRomanDay("2025-12-24", RomanCalendar)
@@ -446,8 +439,7 @@ func TestChristmasBoundary(t *testing.T) {
 }
 
 func TestEpiphanyBoundary(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	// Test Epiphany boundaries
 	dayAfterChristmas, _ := ce.GetRomanDay("2025-01-05", RomanCalendar)
@@ -463,8 +455,7 @@ func TestEpiphanyBoundary(t *testing.T) {
 }
 
 func TestEasterSeasonBoundary(t *testing.T) {
-	validate := getConfiguredValidator()
-	ce := NewCalendarEngine(validate)
+	ce := NewCalendarEngine()
 
 	easterDate := "2025-04-20"
 

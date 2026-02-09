@@ -4,33 +4,26 @@ import (
 	"context"
 
 	"github.com/alecthomas/kong"
-	"github.com/go-playground/validator/v10"
 
-	"github.com/julianstephens/liturgical-time-index/internal/commands"
-	"github.com/julianstephens/liturgical-time-index/internal/util"
+	"github.com/julianstephens/liturgical-time-index/internal"
+	"github.com/julianstephens/liturgical-time-index/internal/command"
 )
 
 type CLI struct {
-	Version  kong.VersionFlag     `short:"v" help:"Show version."`
-	Build    commands.BuildCmd    `          help:"Build the index for a given year." cmd:"" name:"build"`
-	Validate commands.ValidateCmd `          help:"Validate the plan file."           cmd:"" name:"validate"`
+	Version  kong.VersionFlag    `short:"v" help:"Show version."`
+	Build    command.BuildCmd    `          help:"Build the index for a given year." cmd:"" name:"build"`
+	Validate command.ValidateCmd `          help:"Validate the plan file."           cmd:"" name:"validate"`
 }
 
 func main() {
-	validate := validator.New()
-	if err := validate.RegisterValidation("ISO8601", util.ValidateISO8601); err != nil {
-		panic("Failed to register ISO8601 validation: " + err.Error())
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), util.GlobalTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), internal.GlobalTimeout)
 	defer cancel()
 
 	kongCtx := kong.Parse(
 		&CLI{},
 		kong.Name("lti"),
 		kong.Description("CLI that compiles a Roman-season liturgical calendar into daily practice entries"),
-		kong.Vars{"version": util.Version},
-		kong.Bind(validate),
+		kong.Vars{"version": internal.Version},
 		kong.Bind(ctx),
 	)
 

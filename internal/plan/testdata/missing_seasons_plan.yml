@@ -1,0 +1,7 @@
+
+version: 1
+work: "Rule of Saint Benedict"
+witness: "latin"
+defaults:
+  responsory: "RB 1.1"
+seasons: {}

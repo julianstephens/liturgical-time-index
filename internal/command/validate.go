@@ -1,4 +1,4 @@
-package commands
+package command
 
 import (
 	"github.com/julianstephens/go-utils/cliutil"
@@ -6,11 +6,11 @@ import (
 )
 
 type ValidateCmd struct {
-	Plan string `arg:"" help:"Path to the plan YAML file." type:"existingfile"`
+	Plan string `help:"Path to the plan YAML file." type:"existingfile"`
 }
 
 func (c *ValidateCmd) Run() error {
-	if err := plan.ValidatePlan(c.Plan); err != nil {
+	if err := plan.LoadAndValidatePlan(c.Plan); err != nil {
 		cliutil.PrintError("Plan validation failed")
 		return err
 	}

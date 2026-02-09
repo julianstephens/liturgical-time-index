@@ -1,0 +1,16 @@
+
+version: 1
+work: "Rule of Saint Benedict"
+witness: "latin"
+defaults:
+  responsory: "RB 1.1"
+seasons:
+  Advent:
+    weekdays:
+      mon: { responsory: "RB 2.1" }
+      tue: { responsory: "RB 2.2" }
+      wed: { responsory: "RB 2.3" }
+      thu: { responsory: "RB 2.4" }
+      fri: { responsory: "RB 2.5" }
+      sat: { responsory: "RB 2.6" }
+      sun: { responsory: "RB 3.1" }

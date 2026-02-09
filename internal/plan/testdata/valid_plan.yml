@@ -1,0 +1,70 @@
+
+version: 1
+work: "Rule of Saint Benedict"
+witness: "latin"
+defaults:
+  responsory: "RB 1.1"
+seasons:
+  Advent:
+    weekdays:
+      mon: { responsory: "RB 2.1" }
+      tue: { responsory: "RB 2.2" }
+      wed: { responsory: "RB 2.3" }
+      thu: { responsory: "RB 2.4" }
+      fri: { responsory: "RB 2.5" }
+      sat: { responsory: "RB 2.6" }
+      sun: { responsory: "RB 3.1" }
+  Christmastide:
+    weekdays:
+      mon: { responsory: "RB 4.1" }
+      tue: { responsory: "RB 4.2" }
+      wed: { responsory: "RB 4.3" }
+      thu: { responsory: "RB 4.4" }
+      fri: { responsory: "RB 4.5" }
+      sat: { responsory: "RB 4.6" }
+      sun: { responsory: "RB 5.1" }
+  Epiphanytide:
+    weekdays:
+      mon: { responsory: "RB 6.1" }
+      tue: { responsory: "RB 6.2" }
+      wed: { responsory: "RB 6.3" }
+      thu: { responsory: "RB 6.4" }
+      fri: { responsory: "RB 6.5" }
+      sat: { responsory: "RB 6.6" }
+      sun: { responsory: "RB 7.1" }
+  Lent:
+    weekdays:
+      mon: { responsory: "RB 8.1" }
+      tue: { responsory: "RB 8.2" }
+      wed: { responsory: "RB 8.3" }
+      thu: { responsory: "RB 8.4" }
+      fri: { responsory: "RB 8.5" }
+      sat: { responsory: "RB 8.6" }
+      sun: { responsory: "RB 9.1" }
+  "Paschal Triduum":
+    weekdays:
+      mon: { responsory: "RB 10.1" }
+      tue: { responsory: "RB 10.2" }
+      wed: { responsory: "RB 10.3" }
+      thu: { responsory: "RB 10.4" }
+      fri: { responsory: "RB 10.5" }
+      sat: { responsory: "RB 10.6" }
+      sun: { responsory: "RB 11.1" }
+  Easter:
+    weekdays:
+      mon: { responsory: "RB 12.1" }
+      tue: { responsory: "RB 12.2" }
+      wed: { responsory: "RB 12.3" }
+      thu: { responsory: "RB 12.4" }
+      fri: { responsory: "RB 12.5" }
+      sat: { responsory: "RB 12.6" }
+      sun: { responsory: "RB 13.1" }
+  "Ordinary Time":
+    weekdays:
+      mon: { responsory: "RB 14.1" }
+      tue: { responsory: "RB 14.2" }
+      wed: { responsory: "RB 14.3" }
+      thu: { responsory: "RB 14.4" }
+      fri: { responsory: "RB 14.5" }
+      sat: { responsory: "RB 14.6" }
+      sun: { responsory: "RB 15.1" }

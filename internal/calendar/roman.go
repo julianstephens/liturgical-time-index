@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/julianstephens/go-utils/generic"
-	"github.com/julianstephens/liturgical-time-index/internal/util"
+	"github.com/julianstephens/liturgical-time-index/internal"
 )
 
 // GenerateRomanCalendar generates a list of DayKey entries for each day in the specified year and tradition.
@@ -17,7 +17,7 @@ func (ce *CalendarEngine) GenerateRomanCalendar(year string, tradition CalendarT
 	for _, month := range []string{"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"} {
 		for day := 1; day <= 31; day++ {
 			date := year + "-" + month + "-" + padZero(day)
-			_, err := time.Parse(util.DateFormat, date)
+			_, err := time.Parse(internal.DateFormat, date)
 			if err == nil {
 				// valid date, generate DayKey
 				dayKey, err := ce.GetRomanDay(date, tradition)
@@ -25,7 +25,7 @@ func (ce *CalendarEngine) GenerateRomanCalendar(year string, tradition CalendarT
 					return nil, err
 				}
 
-				if err := ce.validate.Struct(dayKey); err != nil {
+				if err := ce.validate(dayKey); err != nil {
 					return nil, &CalendarError{
 						Err:   ErrValidationFailed,
 						Cause: err,
@@ -85,7 +85,7 @@ func (ce *CalendarEngine) GetRomanSeason(date string, tradition CalendarTraditio
 // It calculates the dates of key movable feasts like Easter and Ash Wednesday to determine the season.
 // The logic is based on the general rules for the Roman liturgical calendar, with specific date ranges for each season.
 func (ce *CalendarEngine) getRomanSeason(date string) (LiturgicalSeason, error) {
-	parsed, err := time.Parse(util.DateFormat, date)
+	parsed, err := time.Parse(internal.DateFormat, date)
 	if err != nil {
 		return "", &CalendarError{
 			Err:   ErrParseDateFailed,
@@ -96,7 +96,7 @@ func (ce *CalendarEngine) getRomanSeason(date string) (LiturgicalSeason, error) 
 
 	month := parsed.Month()
 	day := parsed.Day()
-	easterDay := ce.getEasterGregorian(parsed.Year())
+	easterDay := ce.GetEasterGregorian(parsed.Year())
 	easterDay = easterDay.Truncate(24 * time.Hour)
 	ashWednesday := easterDay.AddDate(0, 0, -46)
 	ashWednesday = ashWednesday.Truncate(24 * time.Hour)
@@ -154,7 +154,7 @@ func (ce *CalendarEngine) getRomanSeason(date string) (LiturgicalSeason, error) 
 
 // GetRomanWeekday determines the weekday for a given date string in ISO8601 format.
 func (ce *CalendarEngine) GetRomanWeekday(date string) (Weekday, error) {
-	parsed, err := time.Parse(util.DateFormat, date)
+	parsed, err := time.Parse(internal.DateFormat, date)
 	if err != nil {
 		return "", &CalendarError{
 			Err:   ErrParseDateFailed,
@@ -196,7 +196,7 @@ func (ce *CalendarEngine) GetRomanSeasonWeek(
 	}
 	seasonStartDate = seasonStartDate.Truncate(24 * time.Hour)
 
-	parsed, err := time.Parse(util.DateFormat, date)
+	parsed, err := time.Parse(internal.DateFormat, date)
 	if err != nil {
 		return 0, &CalendarError{
 			Err:   ErrParseDateFailed,
@@ -234,7 +234,7 @@ func (ce *CalendarEngine) getRomanSeasonStartDate(
 		}
 	}
 
-	parsed, err := time.Parse(util.DateFormat, date)
+	parsed, err := time.Parse(internal.DateFormat, date)
 	if err != nil {
 		return time.Time{}, &CalendarError{
 			Err:   ErrParseDateFailed,
@@ -258,15 +258,15 @@ func (ce *CalendarEngine) getRomanSeasonStartDate(
 	case Epiphanytide:
 		return time.Date(parsed.Year(), time.January, 6, 0, 0, 0, 0, time.Local), nil
 	case Lent:
-		easterDay := ce.getEasterGregorian(parsed.Year())
+		easterDay := ce.GetEasterGregorian(parsed.Year())
 		return easterDay.AddDate(0, 0, -46), nil
 	case Triduum:
-		easterDay := ce.getEasterGregorian(parsed.Year())
+		easterDay := ce.GetEasterGregorian(parsed.Year())
 		return easterDay.AddDate(0, 0, -3), nil
 	case Easter:
-		return ce.getEasterGregorian(parsed.Year()), nil
+		return ce.GetEasterGregorian(parsed.Year()), nil
 	case Ordinary:
-		easterDay := ce.getEasterGregorian(parsed.Year())
+		easterDay := ce.GetEasterGregorian(parsed.Year())
 		pentacost := easterDay.AddDate(0, 0, 49)
 		return pentacost.AddDate(0, 0, 1), nil
 	default:
@@ -276,7 +276,7 @@ func (ce *CalendarEngine) getRomanSeasonStartDate(
 
 // Holidays generates a map of key holidays for a given year and tradition, including their dates, seasons, season weeks, and weekdays.
 func (ce *CalendarEngine) Holidays(year int, tradition CalendarTradition) (map[string]DayKey, error) {
-	easterDay := ce.getEasterGregorian(year)
+	easterDay := ce.GetEasterGregorian(year)
 	ashWednesday := easterDay.AddDate(0, 0, -46)
 	holyThursday := easterDay.AddDate(0, 0, -3)
 	goodFriday := easterDay.AddDate(0, 0, -2)
@@ -295,7 +295,7 @@ func (ce *CalendarEngine) Holidays(year int, tradition CalendarTradition) (map[s
 
 	holidays := make(map[string]DayKey)
 	for i, holiday := range holidayNames {
-		dateStr := holidayDates[i].Format(util.DateFormat)
+		dateStr := holidayDates[i].Format(internal.DateFormat)
 		dayKey, err := ce.GetRomanDay(dateStr, tradition)
 		if err != nil {
 			return nil, err

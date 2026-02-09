@@ -3,12 +3,11 @@ package calendar
 import (
 	"time"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/julianstephens/go-utils/generic"
+	"github.com/julianstephens/liturgical-time-index/internal"
 )
 
-type CalendarEngine struct {
-	validate *validator.Validate
-}
+type CalendarEngine struct{}
 
 type CalendarTradition string
 
@@ -41,22 +40,20 @@ const (
 )
 
 type DayKey struct {
-	Date       string            `validate:"required,ISO8601" json:"date"`
-	Tradition  CalendarTradition `validate:"required"         json:"tradition"`
-	Season     LiturgicalSeason  `validate:"required"         json:"season"`
-	SeasonWeek int               `validate:"required,gte=1"   json:"season_week"`
-	Weekday    Weekday           `validate:"required"         json:"weekday"`
+	Date       string            `json:"date"`
+	Tradition  CalendarTradition `json:"tradition"`
+	Season     LiturgicalSeason  `json:"season"      validate:"required"`
+	SeasonWeek int               `json:"season_week" validate:"required,gte=1"`
+	Weekday    Weekday           `json:"weekday"     validate:"required"`
 }
 
-func NewCalendarEngine(validate *validator.Validate) *CalendarEngine {
-	return &CalendarEngine{
-		validate: validate,
-	}
+func NewCalendarEngine() *CalendarEngine {
+	return &CalendarEngine{}
 }
 
-// getEasterGregorian computes the date of Easter for a given year using Butcher's algorithm for the Gregorian calendar.
+// GetEasterGregorian computes the date of Easter for a given year using Butcher's algorithm for the Gregorian calendar.
 // For years before 1583, it uses a simpler algorithm based on the Julian calendar.
-func (ce *CalendarEngine) getEasterGregorian(year int) time.Time {
+func (ce *CalendarEngine) GetEasterGregorian(year int) time.Time {
 	var a, b, c, d, e, r int
 
 	a = year % 19
@@ -83,4 +80,87 @@ func (ce *CalendarEngine) getEasterGregorian(year int) time.Time {
 	}
 
 	return time.Date(year, time.March, r, 0, 0, 0, 0, time.Local)
+}
+
+// validate checks that the provided DayKey has valid values for its fields,
+// including correct date format, valid season and tradition, and appropriate
+// season week and weekday values.
+func (ce *CalendarEngine) validate(dayKey *DayKey) error {
+	if dayKey.Date == "" {
+		return &CalendarError{
+			Message: generic.Ptr("date is required"),
+			Err:     ErrValidationFailed,
+		}
+	}
+	_, err := time.Parse(internal.DateFormat, dayKey.Date)
+	if err != nil {
+		return &CalendarError{
+			Message: generic.Ptr("invalid date format, expected YYYY-MM-DD"),
+			Err:     ErrValidationFailed,
+			Cause:   err,
+		}
+	}
+
+	if dayKey.Season == "" {
+		return &CalendarError{
+			Message: generic.Ptr("season is required"),
+			Err:     ErrValidationFailed,
+		}
+	}
+	parsedSeason := LiturgicalSeason(dayKey.Season)
+	switch parsedSeason {
+	case Advent, Christmastide, Epiphanytide, Lent, Triduum, Easter, Ordinary:
+		// valid season
+	default:
+		return &CalendarError{
+			Message: generic.Ptr("invalid season"),
+			Err:     ErrValidationFailed,
+		}
+	}
+
+	if dayKey.Tradition == "" {
+		return &CalendarError{
+			Message: generic.Ptr("tradition is required"),
+			Err:     ErrValidationFailed,
+		}
+	}
+	parsedTradition := CalendarTradition(dayKey.Tradition)
+	if parsedTradition != RomanCalendar {
+		return &CalendarError{
+			Message: generic.Ptr("unsupported calendar tradition"),
+			Err:     ErrUnsupportedCalendarTradition,
+		}
+	}
+
+	if dayKey.SeasonWeek < 1 {
+		return &CalendarError{
+			Message: generic.Ptr("season week must be at least 1"),
+			Err:     ErrValidationFailed,
+		}
+	}
+	if dayKey.SeasonWeek > 53 {
+		return &CalendarError{
+			Message: generic.Ptr("season week cannot be greater than 53"),
+			Err:     ErrValidationFailed,
+		}
+	}
+
+	if dayKey.Weekday == "" {
+		return &CalendarError{
+			Message: generic.Ptr("weekday is required"),
+			Err:     ErrValidationFailed,
+		}
+	}
+	parsedWeekday := Weekday(dayKey.Weekday)
+	switch parsedWeekday {
+	case Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday:
+		// valid weekday
+	default:
+		return &CalendarError{
+			Message: generic.Ptr("invalid weekday"),
+			Err:     ErrValidationFailed,
+		}
+	}
+
+	return nil
 }
