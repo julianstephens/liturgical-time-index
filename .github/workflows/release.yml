@@ -85,7 +85,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload $GITHUB_REF_NAME ../dist/*
+          gh release upload $GITHUB_REF_NAME ./dist/*
 
   release:
     name: Publish Release
