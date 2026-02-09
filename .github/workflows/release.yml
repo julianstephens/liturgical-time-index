@@ -9,10 +9,8 @@ permissions:
   contents: write
 
 jobs:
-
   create-release:
     name: Create GitHub Release
-    needs: run-integration-tests
     runs-on: ubuntu-latest
 
     steps:
