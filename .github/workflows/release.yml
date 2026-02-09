@@ -87,69 +87,9 @@ jobs:
         run: |
           gh release upload $GITHUB_REF_NAME ../dist/*
 
-  build-tray:
-    needs: [create-release]
-    defaults:
-      run:
-        working-directory: ./daylit-tray
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: "macos-latest" # for Arm based macs (M1 and above).
-            args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest" # for Intel based macs.
-            args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04"
-            args: ""
-          - platform: "windows-latest"
-            args: ""
-
-    name: Build Tray app (${{ matrix.platform }})
-    runs-on: ${{ matrix.platform }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install dependencies (Ubuntu)
-        if: startsWith(matrix.platform, 'ubuntu')
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-
-      - name: Cache Rust
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: ./daylit-tray/src-tauri
-
-      - name: Install npm dependencies
-        run: npm install
-
-      - name: Build with Tauri
-        uses: tauri-apps/tauri-action@v0.5.25
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: ${{ github.ref_name }}
-          assetNamePattern: daylit-tray-[platform]-[arch].[ext]
-          releaseDraft: true
-          args: ${{ matrix.args }}
-
   release:
     name: Publish Release
-    needs: [create-release, build-cli, build-tray]
+    needs: [create-release, build]
     runs-on: ubuntu-latest
 
     steps:
