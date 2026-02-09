@@ -11,8 +11,9 @@ import (
 
 type CLI struct {
 	Version  kong.VersionFlag    `short:"v" help:"Show version."`
-	Build    command.BuildCmd    `          help:"Build the index for a given year." cmd:"" name:"build"`
-	Validate command.ValidateCmd `          help:"Validate the plan file."           cmd:"" name:"validate"`
+	Build    command.BuildCmd    `          help:"Build the index for a given year."  cmd:"" name:"build"`
+	Today    command.TodayCmd    `          help:"Get the entry for a specific date." cmd:"" name:"today"`
+	Validate command.ValidateCmd `          help:"Validate the plan file."            cmd:"" name:"validate"`
 }
 
 func main() {
@@ -23,6 +24,9 @@ func main() {
 		&CLI{},
 		kong.Name("lti"),
 		kong.Description("CLI that compiles a Roman-season liturgical calendar into daily practice entries"),
+		kong.ConfigureHelp(kong.HelpOptions{
+			Compact: true,
+		}),
 		kong.Vars{"version": internal.Version},
 		kong.Bind(ctx),
 	)

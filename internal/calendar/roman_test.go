@@ -69,7 +69,7 @@ func TestGetRomanSeason(t *testing.T) {
 		Epiphanytide:  true,
 		Lent:          true,
 		Triduum:       true,
-		Easter:        true,
+		Eastertide:    true,
 		Ordinary:      true,
 	}
 
@@ -114,7 +114,7 @@ func TestGetRomanSeasonWeek(t *testing.T) {
 		{"2025-01-06", Epiphanytide},
 		{"2025-01-13", Epiphanytide},
 		{"2025-03-05", Lent},
-		{"2025-04-20", Easter},
+		{"2025-04-20", Eastertide},
 		{"2025-06-09", Ordinary},
 	}
 
@@ -155,7 +155,7 @@ func TestGetRomanDay(t *testing.T) {
 		expectedWeekday Weekday
 	}{
 		{"2025-03-09", Lent, Sunday},
-		{"2025-04-20", Easter, Sunday},
+		{"2025-04-20", Eastertide, Sunday},
 		{"2025-12-25", Christmastide, Thursday},
 	}
 
@@ -334,7 +334,7 @@ func TestGetRomanSeasonStartDate(t *testing.T) {
 	}{
 		{"2025-01-10", Epiphanytide},
 		{"2025-03-05", Lent},
-		{"2025-04-20", Easter},
+		{"2025-04-20", Eastertide},
 	}
 
 	for _, tc := range testCases {
@@ -469,7 +469,7 @@ func TestEasterSeasonBoundary(t *testing.T) {
 		t.Fatalf("Failed to get day after Pentecost: %v", err)
 	}
 
-	if easterDay.Season != Easter {
+	if easterDay.Season != Eastertide {
 		t.Errorf("Expected Easter Sunday to be Easter season, got %s", easterDay.Season)
 	}
 

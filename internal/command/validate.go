@@ -10,7 +10,7 @@ type ValidateCmd struct {
 }
 
 func (c *ValidateCmd) Run() error {
-	if err := plan.LoadAndValidatePlan(c.Plan); err != nil {
+	if _, err := plan.LoadAndValidatePlan(c.Plan); err != nil {
 		cliutil.PrintError("Plan validation failed")
 		return err
 	}

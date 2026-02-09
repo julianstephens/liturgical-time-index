@@ -15,7 +15,7 @@ type FormattedEntry struct {
 	Tags *[]string       `yaml:"tags,omitempty"`
 }
 
-func (e *PlanEntry) validate() (*FormattedEntry, error) {
+func (e *PlanEntry) Validate() (*FormattedEntry, error) {
 	refs := make([]RbRef, len(e.Rb))
 	for i, rbRef := range e.Rb {
 		ref, err := NewRbRef(rbRef)

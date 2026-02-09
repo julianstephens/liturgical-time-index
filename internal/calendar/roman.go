@@ -144,7 +144,7 @@ func (ce *CalendarEngine) getRomanSeason(date string) (LiturgicalSeason, error) 
 		}
 		if (parsed.Equal(easterDay) || parsed.After(easterDay)) &&
 			(parsed.Equal(pentecost) || parsed.Before(pentecost)) {
-			return Easter, nil
+			return Eastertide, nil
 		}
 		return Ordinary, nil
 	default:
@@ -263,7 +263,7 @@ func (ce *CalendarEngine) getRomanSeasonStartDate(
 	case Triduum:
 		easterDay := ce.GetEasterGregorian(parsed.Year())
 		return easterDay.AddDate(0, 0, -3), nil
-	case Easter:
+	case Eastertide:
 		return ce.GetEasterGregorian(parsed.Year()), nil
 	case Ordinary:
 		easterDay := ce.GetEasterGregorian(parsed.Year())

@@ -7,6 +7,7 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"github.com/julianstephens/go-utils/generic"
+	"github.com/julianstephens/liturgical-time-index/internal/calendar"
 )
 
 type Plan struct {
@@ -45,24 +46,24 @@ func LoadPlan(planPath string) (*Plan, error) {
 
 // LoadAndValidatePlan loads a plan from the specified path and validates its contents.
 // It checks that the plan can be loaded successfully and that all entries conform to expected formats and rules.
-func LoadAndValidatePlan(planPath string) error {
+func LoadAndValidatePlan(planPath string) (*Plan, error) {
 	plan, err := LoadPlan(planPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := plan.Validate(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return plan, nil
 }
 
 // Validate checks the structure and content of the Plan to ensure it meets the required criteria.
 // It verifies that each season has valid weekday entries, that there are no duplicate weekdays,
 // and that all RB references are properly formatted.
 func (p *Plan) Validate() error {
-	if _, err := p.Defaults.validate(); err != nil {
+	if _, err := p.Defaults.Validate(); err != nil {
 		return &PlanError{
 			Message: generic.Ptr("invalid default plan entry"),
 			Err:     ErrInvalidPlanEntry,
@@ -70,6 +71,14 @@ func (p *Plan) Validate() error {
 	}
 
 	for seasonName, seasonPlan := range p.Seasons {
+		parsedSeasonName := calendar.LiturgicalSeason(seasonName)
+		if parsedSeasonName == "" {
+			return &PlanError{
+				Message: generic.Ptr("invalid season name: " + seasonName),
+				Err:     ErrInvalidPlanEntry,
+			}
+		}
+
 		weekdaysCovered := make(map[string]bool)
 		for weekday, entry := range seasonPlan.Weekdays {
 			if weekdaysCovered[weekday] {
@@ -79,7 +88,7 @@ func (p *Plan) Validate() error {
 				}
 			}
 			weekdaysCovered[weekday] = true
-			if _, err := entry.validate(); err != nil {
+			if _, err := entry.Validate(); err != nil {
 				return &PlanError{
 					Message: generic.Ptr("invalid plan entry in season " + seasonName + " for weekday " + weekday),
 					Err:     ErrInvalidPlanEntry,
@@ -87,7 +96,7 @@ func (p *Plan) Validate() error {
 			}
 		}
 		if seasonPlan.Fallback != nil {
-			if _, err := seasonPlan.Fallback.validate(); err != nil {
+			if _, err := seasonPlan.Fallback.Validate(); err != nil {
 				return &PlanError{
 					Message: generic.Ptr("invalid fallback plan entry in season " + seasonName),
 					Err:     ErrInvalidPlanEntry,
@@ -127,45 +136,45 @@ func (p *Plan) Validate() error {
 }
 
 func validateWeekdays(weekdays []string) error {
-	if !generic.Contains(weekdays, "mon") && !generic.Contains(weekdays, "monday") {
+	if !generic.Contains(weekdays, "mon") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'mon' or 'monday'"),
+			Message: generic.Ptr("missing required weekday 'mon'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}
-	if !generic.Contains(weekdays, "tue") && !generic.Contains(weekdays, "tuesday") {
+	if !generic.Contains(weekdays, "tue") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'tue' or 'tuesday'"),
+			Message: generic.Ptr("missing required weekday 'tue'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}
-	if !generic.Contains(weekdays, "wed") && !generic.Contains(weekdays, "wednesday") {
+	if !generic.Contains(weekdays, "wed") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'wed' or 'wednesday'"),
+			Message: generic.Ptr("missing required weekday 'wed'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}
-	if !generic.Contains(weekdays, "thu") && !generic.Contains(weekdays, "thursday") {
+	if !generic.Contains(weekdays, "thu") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'thu' or 'thursday'"),
+			Message: generic.Ptr("missing required weekday 'thu'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}
-	if !generic.Contains(weekdays, "fri") && !generic.Contains(weekdays, "friday") {
+	if !generic.Contains(weekdays, "fri") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'fri' or 'friday'"),
+			Message: generic.Ptr("missing required weekday 'fri'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}
-	if !generic.Contains(weekdays, "sat") && !generic.Contains(weekdays, "saturday") {
+	if !generic.Contains(weekdays, "sat") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'sat' or 'saturday'"),
+			Message: generic.Ptr("missing required weekday 'sat'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}
-	if !generic.Contains(weekdays, "sun") && !generic.Contains(weekdays, "sunday") {
+	if !generic.Contains(weekdays, "sun") {
 		return &PlanError{
-			Message: generic.Ptr("missing required weekday 'sun' or 'sunday'"),
+			Message: generic.Ptr("missing required weekday 'sun'"),
 			Err:     ErrInvalidPlanEntry,
 		}
 	}

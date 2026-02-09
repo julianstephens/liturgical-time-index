@@ -60,63 +60,84 @@ func TestLoadPlan_MalformedYAML(t *testing.T) {
 func TestValidatePlan_ValidPlan(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "valid_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err != nil {
 		t.Fatalf("LoadAndValidatePlan failed for valid plan: %v", err)
+	}
+	if p == nil {
+		t.Fatal("LoadAndValidatePlan should return non-nil plan for valid plan")
 	}
 }
 
 func TestValidatePlan_IncompleteSeason(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "incomplete_season_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err == nil {
 		t.Error("LoadAndValidatePlan should error for season without all weekdays and no fallback")
+	}
+	if p != nil {
+		t.Error("LoadAndValidatePlan should return nil plan on error")
 	}
 }
 
 func TestValidatePlan_DuplicateWeekday(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "duplicate_weekday_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err == nil {
 		t.Error("LoadAndValidatePlan should error for duplicate weekday in season")
+	}
+	if p != nil {
+		t.Error("LoadAndValidatePlan should return nil plan on error")
 	}
 }
 
 func TestValidatePlan_TooManyWeekdays(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "too_many_weekdays_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err == nil {
 		t.Error("LoadAndValidatePlan should error for more than 7 weekdays in season")
+	}
+	if p != nil {
+		t.Error("LoadAndValidatePlan should return nil plan on error")
 	}
 }
 
 func TestValidatePlan_NoWeekdaysNoFallback(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "no_weekdays_no_fallback_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err == nil {
 		t.Error("LoadAndValidatePlan should error for season with no weekdays and no fallback")
+	}
+	if p != nil {
+		t.Error("LoadAndValidatePlan should return nil plan on error")
 	}
 }
 
 func TestValidatePlan_PartialWeekdaysWithFallback(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "partial_weekdays_with_fallback_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err != nil {
 		t.Fatalf("LoadAndValidatePlan should succeed for partial weekdays with fallback: %v", err)
+	}
+	if p == nil {
+		t.Fatal("LoadAndValidatePlan should return non-nil plan on success")
 	}
 }
 
 func TestValidatePlan_AllWeekdaysNoFallback(t *testing.T) {
 	planPath := filepath.Join(testDataDir, "all_weekdays_no_fallback_plan.yml")
 
-	err := plan.LoadAndValidatePlan(planPath)
+	p, err := plan.LoadAndValidatePlan(planPath)
 	if err != nil {
 		t.Fatalf("LoadAndValidatePlan should succeed for all weekdays without fallback: %v", err)
+	}
+	if p == nil {
+		t.Fatal("LoadAndValidatePlan should return non-nil plan on success")
 	}
 }
 

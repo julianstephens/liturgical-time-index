@@ -3,6 +3,9 @@ package calendar
 import (
 	"time"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+
 	"github.com/julianstephens/go-utils/generic"
 	"github.com/julianstephens/liturgical-time-index/internal"
 )
@@ -12,32 +15,76 @@ type CalendarEngine struct{}
 type CalendarTradition string
 
 const (
-	RomanCalendar CalendarTradition = "Roman"
+	RomanCalendar CalendarTradition = "roman"
 )
 
 type LiturgicalSeason string
 
 const (
-	Advent        LiturgicalSeason = "Advent"
-	Christmastide LiturgicalSeason = "Christmastide"
-	Epiphanytide  LiturgicalSeason = "Epiphanytide"
-	Lent          LiturgicalSeason = "Lent"
-	Triduum       LiturgicalSeason = "Paschal Triduum"
-	Easter        LiturgicalSeason = "Easter"
-	Ordinary      LiturgicalSeason = "Ordinary Time"
+	Advent        LiturgicalSeason = "advent"
+	Christmastide LiturgicalSeason = "christmastide"
+	Epiphanytide  LiturgicalSeason = "epiphanytide"
+	Lent          LiturgicalSeason = "lent"
+	Triduum       LiturgicalSeason = "triduum"
+	Eastertide    LiturgicalSeason = "eastertide"
+	Ordinary      LiturgicalSeason = "ordinary"
 )
+
+func (s LiturgicalSeason) String() string {
+	switch s {
+	case Advent:
+		return "Advent"
+	case Christmastide:
+		return "Christmas"
+	case Epiphanytide:
+		return "Epiphany"
+	case Lent:
+		return "Lent"
+	case Triduum:
+		return "Paschal Triduum"
+	case Eastertide:
+		return "Eastertide"
+	case Ordinary:
+		return "Ordinary Time"
+	default:
+		caser := cases.Title(language.English)
+		return caser.String(string(s))
+	}
+}
 
 type Weekday string
 
 const (
-	Sunday    Weekday = "Sunday"
-	Monday    Weekday = "Monday"
-	Tuesday   Weekday = "Tuesday"
-	Wednesday Weekday = "Wednesday"
-	Thursday  Weekday = "Thursday"
-	Friday    Weekday = "Friday"
-	Saturday  Weekday = "Saturday"
+	Sunday    Weekday = "sun"
+	Monday    Weekday = "mon"
+	Tuesday   Weekday = "tue"
+	Wednesday Weekday = "wed"
+	Thursday  Weekday = "thu"
+	Friday    Weekday = "fri"
+	Saturday  Weekday = "sat"
 )
+
+func (w Weekday) String() string {
+	switch w {
+	case Sunday:
+		return "Sunday"
+	case Monday:
+		return "Monday"
+	case Tuesday:
+		return "Tuesday"
+	case Wednesday:
+		return "Wednesday"
+	case Thursday:
+		return "Thursday"
+	case Friday:
+		return "Friday"
+	case Saturday:
+		return "Saturday"
+	default:
+		caser := cases.Title(language.English)
+		return caser.String(string(w))
+	}
+}
 
 type DayKey struct {
 	Date       string            `json:"date"`
@@ -109,7 +156,7 @@ func (ce *CalendarEngine) validate(dayKey *DayKey) error {
 	}
 	parsedSeason := LiturgicalSeason(dayKey.Season)
 	switch parsedSeason {
-	case Advent, Christmastide, Epiphanytide, Lent, Triduum, Easter, Ordinary:
+	case Advent, Christmastide, Epiphanytide, Lent, Triduum, Eastertide, Ordinary:
 		// valid season
 	default:
 		return &CalendarError{
