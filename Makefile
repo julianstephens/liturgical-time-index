@@ -4,7 +4,7 @@
 BINARY_NAME=lti
 BUILD_DIR=bin
 CMD_DIR=./cmd/lti
-VERSION?=0.1.0
+VERSION?=0.1.1
 LDFLAGS=-ldflags "-X main.version=$(VERSION)"
 
 # Default target

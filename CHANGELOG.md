@@ -1,3 +1,7 @@
+## v0.1.1
+
+- removes the `RbRef` type and replaces it with `rbref.RbRef` from the `canonref` package
+
 ## v0.1.0
 
 - adds `lti today` command to get the entry for today's date (or a specified date) in the liturgical calendar
