@@ -6,9 +6,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/julianstephens/canonref/rbref"
+	"github.com/julianstephens/go-utils/generic"
 	md "github.com/nao1215/markdown"
 
-	"github.com/julianstephens/go-utils/generic"
 	"github.com/julianstephens/liturgical-time-index/internal/plan"
 )
 
@@ -41,7 +42,7 @@ func Markdown(entries []plan.FormattedEntry, outputPath string) (retErr error) {
 				strconv.Itoa(entry.Key.SeasonWeek),
 				entry.Key.Weekday.String(),
 				entry.Cue,
-				strings.Join(generic.Map(entry.Rb, func(ref plan.RbRef) string { return ref.String() }), "; "),
+				strings.Join(generic.Map(entry.Rb, func(ref rbref.RbRef) string { return ref.String() }), "; "),
 			}
 		}),
 	}).Build(); err != nil {

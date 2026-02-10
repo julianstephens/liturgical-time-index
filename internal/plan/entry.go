@@ -1,6 +1,10 @@
 package plan
 
-import "github.com/julianstephens/liturgical-time-index/internal/calendar"
+import (
+	"github.com/julianstephens/canonref/rbref"
+
+	"github.com/julianstephens/liturgical-time-index/internal/calendar"
+)
 
 type PlanEntry struct {
 	Cue  string    `yaml:"cue"`
@@ -11,14 +15,14 @@ type PlanEntry struct {
 type FormattedEntry struct {
 	Key  calendar.DayKey `yaml:"key"`
 	Cue  string          `yaml:"cue"`
-	Rb   []RbRef         `yaml:"rb"`
+	Rb   []rbref.RbRef   `yaml:"rb"`
 	Tags *[]string       `yaml:"tags,omitempty"`
 }
 
 func (e *PlanEntry) Validate() (*FormattedEntry, error) {
-	refs := make([]RbRef, len(e.Rb))
+	refs := make([]rbref.RbRef, len(e.Rb))
 	for i, rbRef := range e.Rb {
-		ref, err := NewRbRef(rbRef)
+		ref, err := rbref.NewRbRef(rbRef)
 		if err != nil {
 			return nil, err
 		}

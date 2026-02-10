@@ -6,9 +6,10 @@ import (
 	"time"
 
 	ics "github.com/arran4/golang-ical"
-
+	"github.com/julianstephens/canonref/rbref"
 	"github.com/julianstephens/go-utils/generic"
 	"github.com/julianstephens/go-utils/helpers"
+
 	"github.com/julianstephens/liturgical-time-index/internal/plan"
 )
 
@@ -41,7 +42,7 @@ func ICS(entries []plan.FormattedEntry, outputPath string) error {
 	return nil
 }
 
-func formatRbRefs(rbRefs []plan.RbRef) string {
+func formatRbRefs(rbRefs []rbref.RbRef) string {
 	var formatted string
 
 	for _, ref := range rbRefs {
